@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#102b46">
+<meta name="description" content="Customer details organizer for loan approval workflows">
+<link rel="manifest" href="manifest.json">
+<title>Customer Loan Desk</title>
+<style>
+:root{--navy:#102b46;--blue:#1769aa;--pale:#eef5fb;--line:#d9e3ec;--ink:#182635;--muted:#637487;--white:#fff;--green:#087f5b}
+*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:var(--ink);font-family:Inter,Roboto,"Segoe UI",Arial,sans-serif}
+header{background:linear-gradient(135deg,#102b46,#1b5b88);color:white;padding:22px 17px 24px;border-radius:0 0 22px 22px}
+.head{max-width:900px;margin:auto;display:flex;align-items:center;gap:13px}.logo{width:47px;height:47px;border-radius:14px;background:#ffffff1c;display:grid;place-items:center;font-size:24px;border:1px solid #ffffff40}
+h1{font-size:22px;margin:0 0 4px}header p{margin:0;color:#d8e8f7;font-size:13px}
+main{max-width:900px;margin:18px auto;padding:0 13px 40px}.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:15px}
+button,.filebtn{border:0;border-radius:11px;padding:11px 14px;font-weight:650;font-size:13px;cursor:pointer}
+.primary{background:var(--blue);color:white}.secondary{background:white;color:var(--navy);border:1px solid var(--line)}.danger{background:#fff0f0;color:#a12626;border:1px solid #ffd6d6}
+.card{background:white;border:1px solid #e2e9f0;border-radius:17px;padding:17px;margin-bottom:13px;box-shadow:0 3px 12px #17324d08}
+.card h2{font-size:15px;margin:0 0 14px;color:var(--navy);display:flex;align-items:center;gap:8px}.num{width:25px;height:25px;border-radius:8px;background:var(--pale);display:grid;place-items:center;color:var(--blue);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{min-width:0}.field.full{grid-column:1/-1}label{display:block;font-size:12px;font-weight:650;color:#405367;margin-bottom:6px}
+input,select,textarea{width:100%;border:1px solid #d4dee8;background:#fff;border-radius:10px;padding:12px 11px;font:inherit;font-size:14px;color:var(--ink);outline:none}
+input:focus,select:focus,textarea:focus{border-color:#3182ce;box-shadow:0 0 0 3px #3182ce1c}textarea{resize:vertical;min-height:76px}
+.hint{font-size:11px;color:var(--muted);margin-top:6px}.checkrow{display:flex;align-items:center;gap:9px;margin:10px 0 0;font-size:13px;color:#405367}.checkrow input{width:auto}
+.records-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 2px 10px}.records-head h2{font-size:17px;margin:0}.count{font-size:12px;color:var(--muted)}
+.record{background:white;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:9px;display:flex;justify-content:space-between;gap:12px;align-items:center}.record strong{display:block;font-size:14px}.record small{display:block;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}.record-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.record-actions button{padding:8px 10px;font-size:12px}
+.empty{padding:20px;text-align:center;color:var(--muted);font-size:13px;background:#fff;border:1px dashed var(--line);border-radius:14px}
+footer{font-size:11px;color:var(--muted);line-height:1.5;margin:18px 3px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#122b42;color:white;padding:11px 16px;border-radius:12px;font-size:13px;box-shadow:0 5px 25px #0002;display:none;max-width:90%;z-index:5}
+@media(max-width:560px){.grid{grid-template-columns:1fr;gap:11px}.field.full{grid-column:auto}.card{padding:14px}.toolbar button{flex:1}.record{align-items:flex-start;flex-direction:column}.record-actions{justify-content:flex-start}h1{font-size:20px}}
+</style>
+</head>
+<body>
+<header><div class="head"><div class="logo">▦</div><div><h1>Customer Loan Desk</h1><p>Customer details • Save • Share securely</p></div></div></header>
+<main>
+<div class="toolbar">
+<button class="primary" type="button" id="saveBtn">＋ Save Customer</button>
+<button class="secondary" type="button" id="newBtn">＋ New Form</button>
+<button class="secondary" type="button" id="exportBtn">Download Backup</button>
+<label class="filebtn secondary" for="importFile">Import Backup</label><input id="importFile" type="file" accept=".json,application/json" hidden>
+</div>
+<form id="customerForm">
+<input type="hidden" id="editId">
+<section class="card"><h2><span class="num">01</span> Customer Details</h2><div class="grid">
+<div class="field"><label for="customerName">Customer Name *</label><input id="customerName" required autocomplete="name" placeholder="Full name"></div>
+<div class="field"><label for="customerNumber">Customer Number *</label><input id="customerNumber" required inputmode="tel" autocomplete="tel" placeholder="Mobile number"></div>
+<div class="field"><label for="alternateNumber">Alternate Number</label><input id="alternateNumber" inputmode="tel" placeholder="Alternate mobile number"></div>
+<div class="field"><label for="nomineeName">Nominee Name</label><input id="nomineeName" placeholder="Nominee full name"></div>
+<div class="field"><label for="nomineeNumber">Nominee Number</label><input id="nomineeNumber" inputmode="tel" placeholder="Nominee mobile number"></div>
+<div class="field"><label for="residenceType">Residential Status</label><select id="residenceType"><option value="">Select</option><option>Rent</option><option>Own</option><option>Family-owned</option><option>Other</option></select></div>
+<div class="field full"><label for="residentialAddress">Residential Address</label><textarea id="residentialAddress" placeholder="Door no., street, area, city, PIN code"></textarea></div>
+</div></section>
+<section class="card"><h2><span class="num">02</span> Family Details</h2><div class="grid">
+<div class="field"><label for="motherName">Mother Name</label><input id="motherName" placeholder="Mother's full name"></div>
+<div class="field"><label for="fatherName">Father Name (Optional)</label><input id="fatherName" placeholder="Father's full name"></div>
+</div></section>
+<section class="card"><h2><span class="num">03</span> Employment Details</h2><div class="grid">
+<div class="field"><label for="employmentType">Employment Type</label><select id="employmentType"><option value="">Select</option><option>Salaried</option><option>Self-employed</option></select></div>
+<div class="field full"><label for="jobDetails">Job Details</label><textarea id="jobDetails" placeholder="Company/business name, designation, work type, years of experience, etc."></textarea></div>
+<div class="field full"><label for="jobAddress">Job Address</label><textarea id="jobAddress" placeholder="Office/company/business address"></textarea></div>
+</div><label class="checkrow"><input type="checkbox" id="sameAddress"> Job address is same as residential address</label><p class="hint">When selected, the residential address will be used as the job address when saving or sharing.</p></section>
+<section class="card"><h2><span class="num">04</span> References</h2><div class="grid">
+<div class="field"><label for="ref1Name">Reference 1 Name</label><input id="ref1Name" placeholder="Full name"></div>
+<div class="field"><label for="ref1Number">Reference 1 Number</label><input id="ref1Number" inputmode="tel" placeholder="Mobile number"></div>
+<div class="field"><label for="ref2Name">Reference 2 Name</label><input id="ref2Name" placeholder="Full name"></div>
+<div class="field"><label for="ref2Number">Reference 2 Number</label><input id="ref2Number" inputmode="tel" placeholder="Mobile number"></div>
+</div></section>
+<div class="toolbar"><button class="primary" type="submit">Save Customer Details</button><button class="secondary" type="button" id="shareCurrentBtn">Share Form Details</button><button class="secondary" type="button" id="clearBtn">Clear Form</button></div>
+</form>
+<div class="records-head"><h2>Saved Customers</h2><span class="count" id="count">0 records</span></div>
+<div id="records"></div>
+<footer><strong>Privacy note:</strong> This app saves records in this browser on this device. It does not send data to a server. Use Download Backup to keep a copy. Customer and reference details are sensitive—share only with authorised recipients and avoid using a shared/public device.</footer>
+</main><div class="toast" id="toast"></div>
+<script>
+const $=id=>document.getElementById(id);
+const fields=['customerName','customerNumber','alternateNumber','nomineeName','nomineeNumber','residenceType','residentialAddress','motherName','fatherName','employmentType','jobDetails','jobAddress','ref1Name','ref1Number','ref2Name','ref2Number'];
+const KEY='customerLoanDeskRecordsV1';
+let records=[];
+try{records=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(records))records=[]}catch(e){records=[]}
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.style.display='none',2600)}
+function readForm(){const d={};fields.forEach(id=>d[id]=$(id).value.trim());d.sameAddress=$('sameAddress').checked;if(d.sameAddress)d.jobAddress=d.residentialAddress;return d}
+function fillForm(d){fields.forEach(id=>$(id).value=d[id]||'');$('sameAddress').checked=!!d.sameAddress;$('editId').value=d.id||'';window.scrollTo({top:0,behavior:'smooth'});$('saveBtn').textContent=d.id?'Update Customer':'＋ Save Customer'}
+function clearForm(){ $('customerForm').reset();$('editId').value='';$('saveBtn').textContent='＋ Save Customer'}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(records));return true}catch(e){toast('Storage is full. Download a backup and remove old records.');return false}}
+function formatRecord(d){return `CUSTOMER LOAN DETAILS\n\nCustomer Name: ${d.customerName||'-'}\nCustomer Number: ${d.customerNumber||'-'}\nAlternate Number: ${d.alternateNumber||'-'}\nNominee Name: ${d.nomineeName||'-'}\nNominee Number: ${d.nomineeNumber||'-'}\nResidential Address: ${d.residentialAddress||'-'}\nResidential Status: ${d.residenceType||'-'}\nMother Name: ${d.motherName||'-'}\nFather Name: ${d.fatherName||'-'}\nEmployment Type: ${d.employmentType||'-'}\nJob Details: ${d.jobDetails||'-'}\nJob Address: ${d.sameAddress?'Same as residential address':(d.jobAddress||'-')}\nReference 1 Name: ${d.ref1Name||'-'}\nReference 1 Number: ${d.ref1Number||'-'}\nReference 2 Name: ${d.ref2Name||'-'}\nReference 2 Number: ${d.ref2Number||'-'}\n\nPrepared using Customer Loan Desk`;}
+function render(){ $('count').textContent=`${records.length} record${records.length===1?'':'s'}`;const box=$('records');box.innerHTML='';if(!records.length){box.innerHTML='<div class="empty">No customers saved yet. Complete the form and tap Save Customer Details.</div>';return}
+records.slice().sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0)).forEach(d=>{const el=document.createElement('div');el.className='record';const info=document.createElement('div');const strong=document.createElement('strong');strong.textContent=d.customerName||'Unnamed customer';const small=document.createElement('small');small.textContent=(d.customerNumber||'No number')+' · '+(d.employmentType||'Employment not set');info.append(strong,small);const actions=document.createElement('div');actions.className='record-actions';[['Open','secondary',()=>fillForm(d)],['Share','primary',()=>share(d)],['Delete','danger',()=>removeRecord(d.id)]].forEach(([label,cls,fn])=>{const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=label;b.onclick=fn;actions.append(b)});el.append(info,actions);box.append(el)})}
+function save(){if(!$('customerForm').reportValidity())return;const d=readForm();const id=$('editId').value;d.id=id||('c_'+Date.now()+'_'+Math.random().toString(36).slice(2,7));d.updatedAt=Date.now();if(id){records=records.map(x=>x.id===id?d:x)}else records.push(d);if(persist()){render();fillForm(d);toast(id?'Customer updated':'Customer saved on this device')}}
+function removeRecord(id){const d=records.find(x=>x.id===id);if(!d||!confirm(`Delete saved details for ${d.customerName||'this customer'}?`))return;records=records.filter(x=>x.id!==id);persist();render();toast('Record deleted')}
+async function share(d){const text=formatRecord(d);try{if(navigator.share){await navigator.share({title:'Customer Loan Details',text});}else{await navigator.clipboard.writeText(text);toast('Details copied. Paste into WhatsApp or another app.')}}catch(e){if(e.name!=='AbortError'){try{await navigator.clipboard.writeText(text);toast('Details copied to clipboard')}catch(_){downloadText('customer-details.txt',text)}}}}
+function downloadText(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+$('customerForm').addEventListener('submit',e=>{e.preventDefault();save()});$('saveBtn').onclick=()=>save();$('newBtn').onclick=()=>{clearForm();window.scrollTo({top:0,behavior:'smooth'})};$('clearBtn').onclick=()=>{clearForm();toast('Form cleared')};$('shareCurrentBtn').onclick=()=>{if(!$('customerForm').reportValidity())return;share(readForm())};
+$('sameAddress').addEventListener('change',()=>{if($('sameAddress').checked&&$('residentialAddress').value.trim())$('jobAddress').value=$('residentialAddress').value});
+$('residentialAddress').addEventListener('input',()=>{if($('sameAddress').checked)$('jobAddress').value=$('residentialAddress').value});
+$('exportBtn').onclick=()=>{downloadText('customer-loan-desk-backup.json',JSON.stringify(records,null,2));toast('Backup download started')};
+$('importFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const data=JSON.parse(await f.text());if(!Array.isArray(data))throw Error();if(!confirm(`Import ${data.length} records? Existing records with the same ID will be updated.`))return;const map=new Map(records.map(x=>[x.id,x]));data.forEach(x=>{if(x&&typeof x==='object'){if(!x.id)x.id='c_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);map.set(x.id,x)}});records=[...map.values()];persist();render();toast('Backup imported')}catch(_){alert('That file is not a valid Customer Loan Desk backup.')}e.target.value=''});
+render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script>
+</body></html>
